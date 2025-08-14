@@ -1,0 +1,25 @@
+services:
+  api-service:
+    build: ./api  # Build your API from Dockerfile
+    environment:
+      - PORT=3000;9229
+    ports:
+      - "3000:3000"
+      - "9229:9229"
+    networks:
+      - api-network
+
+  nginx-gateway:
+    image: nginx:1.23-alpine  # Lightweight version
+    ports:
+      - "8080:80"
+    volumes:
+      - ./nginx/auth:/etc/nginx/auth
+    depends_on:
+      - api-service
+    networks:
+      - api-network
+
+networks:
+  api-network:
+    driver: bridge
